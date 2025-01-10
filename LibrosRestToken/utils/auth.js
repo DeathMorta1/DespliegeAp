@@ -20,7 +20,25 @@ let protegerRuta = (req, res, next) => {
         token = token.slice(7);
         let resultado = validarToken(token);
 
-        if (resultado &&  resultado.rol === "admin")            
+        if (resultado &&  resultado.rol === 'editor')            
+            next(); 
+        else
+            res.send({ok: false, error: "Usuario no autorizado"});
+    } else     
+        
+        res.send({ok: false, error: "Usuario no autorizado"});
+}
+
+let protegerRutaAdmin = (req, res, next) => {
+    
+    let token = req.headers['authorization'];
+    
+    if (token && token.startsWith("Bearer ")) 
+    {    
+        token = token.slice(7);
+        let resultado = validarToken(token);
+
+        if (resultado &&  resultado.rol === 'admin')            
             next(); 
         else
             res.send({ok: false, error: "Usuario no autorizado"});
@@ -33,5 +51,6 @@ let protegerRuta = (req, res, next) => {
 module.exports = {
     generarToken: generarToken,
     validarToken: validarToken,
-    protegerRuta: protegerRuta
+    protegerRuta: protegerRuta,
+    protegerRutaAdmin: protegerRutaAdmin
 };

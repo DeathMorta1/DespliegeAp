@@ -5,7 +5,7 @@ let Autor = require(__dirname+"/../models/autor.js");
 
 let router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/',auth.protegerRuta, async (req, res) => {
     try {
       const resultado = await Autor.find(); 
       res.status(200).send({ ok: true, resultado: resultado });
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id',auth.protegerRuta, (req, res) => {
     Autor.findById(req.params.id).then(resultado => {
         if(resultado)
             res.status(200)
@@ -30,7 +30,7 @@ router.get('/:id', (req, res) => {
     }); 
 });
 
-router.post('/',auth.protegerRuta, (req, res) => {
+router.post('/',auth.protegerRutaAdmin, (req, res) => {
 
     let nuevoAutor = new Autor({
         nombre: req.body.nombre,
@@ -47,7 +47,7 @@ router.post('/',auth.protegerRuta, (req, res) => {
     });
 });
 
-router.put('/:id',auth.protegerRuta, (req, res) => {
+router.put('/:id',auth.protegerRutaAdmin, (req, res) => {
 
     Autor.findByIdAndUpdate(req.params.id, {
         $set: {
@@ -64,7 +64,7 @@ router.put('/:id',auth.protegerRuta, (req, res) => {
     });
 });
 
-router.delete('/:id',auth.protegerRuta, (req, res) => {
+router.delete('/:id',auth.protegerRutaAdmin, (req, res) => {
 
     Autor.findByIdAndDelete(req.params.id)
     .then(resultado => {
