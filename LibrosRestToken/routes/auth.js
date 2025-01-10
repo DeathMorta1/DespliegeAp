@@ -9,19 +9,19 @@ let router = express.Router();
 
 // Simulamos la base de datos así
 const usuarios = [
-    { login: 'Pepe', password: '1234', rol: 'admin'},
-    { login: 'Juan', password: '123', rol: 'editor'}
+    { usuario: 'Pepe', password: '1234', rol: 'admin'},
+    { usuario: 'Juan', password: '123', rol: 'editor'}
 ];
 
 // Ruta para manejar el inicio de sesión
 router.post('/login', (req, res) => {
-    let login = req.body.login;
+    let usuario = req.body.usuario;
     let password = req.body.password;
     let existeUsuario = usuarios.filter(u =>
-        u.login == login && u.password == password);
+        u.usuario == usuario && u.password == password);
 
     if (existeUsuario.length == 1)
-        res.send({ok: true, token: auth.generarToken(login)});
+        res.send({ok: true, token: auth.generarToken(usuario)});
     else
         res.send({ok: false});
 });
