@@ -21,7 +21,8 @@ router.post('/login', (req, res) => {
         u.usuario == usuario && u.password == password);
 
     if (existeUsuario.length == 1)
-        res.send({ok: true, token: auth.generarToken(usuario)});
+        res.send({ok: true, token: auth.generarToken(existeUsuario[0].usuario,
+                                                     existeUsuario[0].rol)});
     else
         res.send({ok: false});
 });

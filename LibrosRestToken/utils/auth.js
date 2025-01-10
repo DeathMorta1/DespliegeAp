@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const secreto = "secretoNode";
 
-let generarToken = login => jwt.sign({login: login}, secreto, {expiresIn: "2 hours"});
+let generarToken = (login,rol) => jwt.sign({login: login, rol:rol}, secreto, {expiresIn: "2 hours"});
 
 let validarToken = token => {
     try {
@@ -18,8 +18,9 @@ let protegerRuta = (req, res, next) => {
     if (token && token.startsWith("Bearer ")) 
     {    
         token = token.slice(7);
-    
-        if (validarToken(token))            
+        let resultado = validarToken(token);
+
+        if (resultado &&  resultado.rol === "admin")            
             next(); 
         else
             res.send({ok: false, error: "Usuario no autorizado"});
