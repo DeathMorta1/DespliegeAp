@@ -20,7 +20,7 @@ let protegerRuta = (req, res, next) => {
         token = token.slice(7);
         let resultado = validarToken(token);
 
-        if (resultado &&  resultado.rol === 'editor')            
+        if (resultado &&  resultado.rol !== '')            
             next(); 
         else
             res.send({ok: false, error: "Usuario no autorizado"});
