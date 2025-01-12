@@ -6,7 +6,6 @@ const auth = require(__dirname + '/../utils/auth');
 // Creamos un enrutador de Express para definir las rutas de autenticación
 let router = express.Router();
 
-// Simulamos la base de datos así
 let User = require(__dirname+'/../models/users.js');
 
 
