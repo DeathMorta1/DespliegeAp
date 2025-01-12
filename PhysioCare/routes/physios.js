@@ -1,6 +1,7 @@
 const express = require('express');
 
 let Physio = require(__dirname+'/../models/physio.js');
+const auth = require(__dirname+'/../auth/auth.js');
 
 const router = express.Router();
 
@@ -42,7 +43,7 @@ router.get('/:id',(req,res)=>{
 });
 
 //Peticion para insertar un physio
-router.post('/',(req,res)=>{
+router.post('/',auth.protegerRuta,(req,res)=>{
     let newPhysio = new Physio({
         name: req.body.name,
         surname: req.body.surname,
@@ -57,7 +58,7 @@ router.post('/',(req,res)=>{
 });
 
 //Peticion para modificar un physio
-router.put('/:id',(req,res)=>{
+router.put('/:id',auth.protegerRuta,(req,res)=>{
     Physio.findByIdAndUpdate(req.params.id,{
         $set: {
             name: req.body.name,
@@ -75,7 +76,7 @@ router.put('/:id',(req,res)=>{
 });
 
 //Peticion para borrar el physio
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',auth.protegerRuta,(req,res)=>{
     Physio.findByIdAndDelete(req.params.id).then(resultado=>
         res.status(200).send({ok:true,resultado:resultado})
     ).catch(error=>{
