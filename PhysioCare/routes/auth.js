@@ -1,7 +1,7 @@
 const express = require('express');
 
 // Importamos el módulo de autenticación personalizado desde utils/auth
-const auth = require(__dirname + '/../utils/auth');
+const auth = require(__dirname + '/../auth/auth');
 
 // Creamos un enrutador de Express para definir las rutas de autenticación
 let router = express.Router();
