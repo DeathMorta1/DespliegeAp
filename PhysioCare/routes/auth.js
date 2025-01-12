@@ -7,16 +7,14 @@ const auth = require(__dirname + '/../utils/auth');
 let router = express.Router();
 
 // Simulamos la base de datos así
-const usuarios = [
-    { usuario: 'Pepe', password: '1234', rol: 'admin'},
-    { usuario: 'Juan', password: '123', rol: 'editor'}
-];
+let User = require(__dirname+'/../models/users.js');
+
 
 // Ruta para manejar el inicio de sesión
 router.post('/login', (req, res) => {
     let usuario = req.body.usuario;
     let password = req.body.password;
-    let existeUsuario = usuarios.filter(u =>
+    let existeUsuario = User.filter(u =>
         u.usuario == usuario && u.password == password);
 
     if (existeUsuario.length == 1)
