@@ -1,11 +1,12 @@
 const express = require('express');
 
 let Patient = require(__dirname+'/../models/patient.js');
+const auth = require(__dirname+'/../auth/auth.js');
 
 let router = express.Router();
 
 //Peticion para obtener todos los pacientes.
-router.get('/', (req,res)=>{
+router.get('/',auth.protegerRutaPatient, (req,res)=>{
     Patient.find().then(resultado =>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -16,7 +17,7 @@ router.get('/', (req,res)=>{
 });
 
 //Peticion para buscar un paciente/s por apellido
-router.get('/find',(req,res)=>{
+router.get('/find',auth.protegerRutaPatient,(req,res)=>{
     const { surname } = req.query;
     
     Patient.find({surname: {$regex:surname,$options:'i'}
@@ -42,7 +43,7 @@ router.get('/:id',(req,res)=>{
 });
 
 //Peticion para insertar un paciente 
-router.post('/',(req,res)=>{
+router.post('/',auth.protegerRutaPatient,(req,res)=>{
     let newPatient = new Patient({
         name: req.body.name,
         surname: req.body.surname,
@@ -58,7 +59,7 @@ router.post('/',(req,res)=>{
 });
 
 //Peticion para modificar un paciente
-router.put('/:id',(req,res)=>{
+router.put('/:id',auth.protegerRutaPatient,(req,res)=>{
     Patient.findByIdAndUpdate(req.params.id,{
         $set: {
             name: req.body.name,
@@ -77,7 +78,7 @@ router.put('/:id',(req,res)=>{
 });
 
 //Peticion para borrar un paciente
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',auth.protegerRutaPatient,(req,res)=>{
     Patient.findByIdAndDelete(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
