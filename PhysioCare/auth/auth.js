@@ -43,9 +43,35 @@ let protegerRutaPatient = (req,res,next)=>{
         res.send({ok: false, error: "Usuario no autorizado"});
 };
 
+let protegerPrueba = (valor=0)=>{
+    return (req,res,next)=>{
+        let token = req.headers['authorization'];
+    
+        if(token && token.startsWith("Bearer ")){
+            token = token.slice(7);
+            let resultado = validarToken(token);
+            
+            if(resultado && resultado.rol ==='admin')
+                next();
+            else if (resultado &&  resultado.rol !== 'patient' && valor === 1)            
+                next();
+            else
+                res.send({ok: false, error: "Usuario no autorizado"});
+            
+        }else
+            res.send({ok: false, error: "Usuario no autorizado"});
+    };
+};
+
+
+
+
+
+
 module.exports = {
     generarToken: generarToken,
     validarToken: validarToken,
     protegerRuta: protegerRuta,
-    protegerRutaPatient:protegerRutaPatient
+    protegerRutaPatient:protegerRutaPatient,
+    protegerPrueba:protegerPrueba
 };

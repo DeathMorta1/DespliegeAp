@@ -6,7 +6,7 @@ const auth = require(__dirname+'/../auth/auth.js');
 let router = express.Router();
 
 //Peticion para obtener todos los pacientes.
-router.get('/',auth.protegerRutaPatient, (req,res)=>{
+router.get('/',auth.protegerPrueba(), (req,res)=>{
     Patient.find().then(resultado =>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
