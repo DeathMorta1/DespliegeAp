@@ -1,11 +1,12 @@
 const express = require('express');
 
 const Record = require(__dirname+'/../models/record.js');
+const auth = require(__dirname+'/../auth/auth.js');
 
 const router = express.Router();
 
 //Peticion para recuperar todos los Records
-router.get('/',(req,res)=>{
+router.get('/',auth.protegerRutaPatient,(req,res)=>{
     Record.find().then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -16,7 +17,7 @@ router.get('/',(req,res)=>{
 });
 
 //Peticion para recuperar los Records por el apellido del paciente
-router.get('/find',(req,res)=>{
+router.get('/find',auth.protegerRutaPatient,(req,res)=>{
     const { surname } = req.query;
     Record.find({
         surname: {$regex:surname,$options:'i'}
@@ -41,7 +42,7 @@ router.get('/:id',(req,res)=>{
 });
 
 //Peticion para insertar un Record.
-router.post('/',(req,res)=>{
+router.post('/',auth.protegerRutaPatient,(req,res)=>{
     let newRecord = new Record({
         patient: req.body.patient,
         medicarRecord: req.body.medicarRecord
@@ -54,7 +55,7 @@ router.post('/',(req,res)=>{
 });
 
 //Peticion para insertar una cita
-router.post('/:id/appointments',(req,res)=>{
+router.post('/:id/appointments',auth.protegerRutaPatient,(req,res)=>{
     Record.findById(req.params.id).then(record=>{
 
         if(!record){
@@ -78,7 +79,7 @@ router.post('/:id/appointments',(req,res)=>{
 });
 
 //Peticion para borrar record
-router.delete('/:id',(req,res)=>{
+router.delete('/:id',auth.protegerRutaPatient,(req,res)=>{
     Record.findByIdAndDelete(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
