@@ -25,10 +25,23 @@ let protegerRuta = (req, res, next) => {
         else
             res.send({ok: false, error: "Usuario no autorizado"});
     } else
-        res.send({ok: false, error: "Usuario no autorizado"});
+         res.send({ok: false, error: "Usuario no autorizado"});
 }
 
+let protegerRutaPatient = (req,res,next)=>{
+    let token = req.headers['authorization'];
 
+    if(token && token.startsWith("Bearer ")){
+        token = token.slice(7);
+        let resultado = validarToken(token);
+
+        if (resultado &&  resultado.rol !== 'patient')            
+            next(); 
+        else
+            res.send({ok: false, error: "Usuario no autorizado"});
+    }else
+        res.send({ok: false, error: "Usuario no autorizado"});
+};
 
 module.exports = {
     generarToken: generarToken,
