@@ -1,12 +1,12 @@
 const express = require('express');
 
 const Record = require(__dirname+'/../models/record.js');
-const auth = require(__dirname+'/../auth/auth.js');
+const {protegerRuta,protegerPorId} = require(__dirname+'/../auth/auth.js');
 
 const router = express.Router();
 
 //Peticion para recuperar todos los Records
-router.get('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.get('/',protegerRuta(["admin","physio"]),(req,res)=>{
     Record.find().then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -17,7 +17,7 @@ router.get('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para recuperar los Records por el apellido del paciente
-router.get('/find',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.get('/find',protegerRuta(["admin","physio"]),(req,res)=>{
     const { surname } = req.query;
     Record.find({
         surname: {$regex:surname,$options:'i'}
@@ -31,7 +31,7 @@ router.get('/find',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para buscar un record por id
-router.get('/:id',auth.protegerRuta(['admin','physio','patient']),auth.protegerPorId(),(req,res)=>{
+router.get('/:id',protegerRuta(["admin","physio","patient"]),protegerPorId(),(req,res)=>{
     Record.findById(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -42,7 +42,7 @@ router.get('/:id',auth.protegerRuta(['admin','physio','patient']),auth.protegerP
 });
 
 //Peticion para insertar un Record.
-router.post('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.post('/',protegerRuta(["admin","physio"]),(req,res)=>{
     let newRecord = new Record({
         patient: req.body.patient,
         medicarRecord: req.body.medicarRecord
@@ -55,7 +55,7 @@ router.post('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para insertar una cita
-router.post('/:id/appointments',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.post('/:id/appointments',protegerRuta(["admin","physio"]),(req,res)=>{
     Record.findById(req.params.id).then(record=>{
 
         if(!record){
@@ -79,7 +79,7 @@ router.post('/:id/appointments',auth.protegerRuta(['admin','physio']),(req,res)=
 });
 
 //Peticion para borrar record
-router.delete('/:id',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.delete('/:id',protegerRuta(["admin","physio"]),(req,res)=>{
     Record.findByIdAndDelete(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{

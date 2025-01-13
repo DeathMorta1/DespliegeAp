@@ -12,7 +12,7 @@ let validarToken = (token) => {
 }
 
 let protegerRuta = (rol)=>{
-    (req, res, next) => {
+    return (req, res, next) => {
     
         let token = req.headers['authorization'];
         

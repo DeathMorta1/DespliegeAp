@@ -1,12 +1,12 @@
 const express = require('express');
 
 let Patient = require(__dirname+'/../models/patient.js');
-const auth = require(__dirname+'/../auth/auth.js');
+const {protegerRuta,protegerPorId} = require(__dirname+'/../auth/auth.js');
 
 let router = express.Router();
 
 //Peticion para obtener todos los pacientes.
-router.get('/',auth.protegerRuta(['admin','physio']), (req,res)=>{
+router.get('/',protegerRuta(["admin","physio"]), (req,res)=>{
     Patient.find().then(resultado =>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -17,7 +17,7 @@ router.get('/',auth.protegerRuta(['admin','physio']), (req,res)=>{
 });
 
 //Peticion para buscar un paciente/s por apellido
-router.get('/find',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.get('/find',protegerRuta(["admin","physio"]),(req,res)=>{
 
     Patient.find({surname: {$regex:req.query.surname,$options:'i'}
     }).then(resultado=>{
@@ -30,7 +30,7 @@ router.get('/find',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para buscar un paciente por id
-router.get('/:id',auth.protegerRuta(['admin','physio','patient']),auth.protegerPorId(),(req,res)=>{
+router.get('/:id',protegerRuta(["admin","physio","patient"]),protegerPorId(),(req,res)=>{
     Patient.findById(req.params.id).then((resultado)=>{
         if(resultado)
             res.status(200).send({ok:true,resultado:resultado});
@@ -42,7 +42,7 @@ router.get('/:id',auth.protegerRuta(['admin','physio','patient']),auth.protegerP
 });
 
 //Peticion para insertar un paciente 
-router.post('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.post('/',protegerRuta(["admin","physio"]),(req,res)=>{
     let newPatient = new Patient({
         name: req.body.name,
         surname: req.body.surname,
@@ -58,7 +58,7 @@ router.post('/',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para modificar un paciente
-router.put('/:id',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.put('/:id',protegerRuta(["admin","physio"]),(req,res)=>{
     Patient.findByIdAndUpdate(req.params.id,{
         $set: {
             name: req.body.name,
@@ -77,7 +77,7 @@ router.put('/:id',auth.protegerRuta(['admin','physio']),(req,res)=>{
 });
 
 //Peticion para borrar un paciente
-router.delete('/:id',auth.protegerRuta(['admin','physio']),(req,res)=>{
+router.delete('/:id',protegerRuta(["admin","physio"]),(req,res)=>{
     Patient.findByIdAndDelete(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{

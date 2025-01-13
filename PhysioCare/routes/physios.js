@@ -1,13 +1,13 @@
 const express = require('express');
 
 let Physio = require(__dirname+'/../models/physio.js');
-const auth = require(__dirname+'/../auth/auth.js');
+const {protegerRuta,protegerPorId} = require(__dirname+'/../auth/auth.js');
 
 const router = express.Router();
 
 
 //Peticion para recuperar todos los physios
-router.get('/',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
+router.get('/',protegerRuta(["admin","physio","patient"]),(req,res)=>{
     Physio.find().then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado})
     }).catch(error=>{
@@ -18,7 +18,7 @@ router.get('/',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
 });
 
 //Peticion para buscar un physio por especialidad
-router.get('/find',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
+router.get('/find',protegerRuta(["admin","physio","patient"]),(req,res)=>{
     const { specialty } = req.query;
     Physio.find({
         specialty: {$regex:specialty,$options:'i'}
@@ -32,7 +32,7 @@ router.get('/find',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
 });
 
 //Peticion para buscar un physio por id
-router.get('/:id',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
+router.get('/:id',protegerRuta(["admin","physio","patient"]),(req,res)=>{
     Physio.findById(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -43,7 +43,7 @@ router.get('/:id',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
 });
 
 //Peticion para insertar un physio
-router.post('/',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
+router.post('/',protegerRuta(["admin"]),(req,res)=>{
     let newPhysio = new Physio({
         name: req.body.name,
         surname: req.body.surname,
@@ -58,7 +58,7 @@ router.post('/',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
 });
 
 //Peticion para modificar un physio
-router.put('/:id',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
+router.put('/:id',protegerRuta(["admin"]),(req,res)=>{
     Physio.findByIdAndUpdate(req.params.id,{
         $set: {
             name: req.body.name,
@@ -76,7 +76,7 @@ router.put('/:id',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
 });
 
 //Peticion para borrar el physio
-router.delete('/:id',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
+router.delete('/:id',protegerRuta(["admin"]),(req,res)=>{
     Physio.findByIdAndDelete(req.params.id).then(resultado=>
         res.status(200).send({ok:true,resultado:resultado})
     ).catch(error=>{
