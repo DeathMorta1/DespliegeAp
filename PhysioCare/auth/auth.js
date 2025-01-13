@@ -46,5 +46,6 @@ let protegerRutaPatient = (req,res,next)=>{
 module.exports = {
     generarToken: generarToken,
     validarToken: validarToken,
-    protegerRuta: protegerRuta
+    protegerRuta: protegerRuta,
+    protegerRutaPatient:protegerRutaPatient
 };
