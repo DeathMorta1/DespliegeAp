@@ -21,7 +21,7 @@ let protegerRuta = (rol)=>{
             token = token.slice(7);
             let resultado = validarToken(token);
     
-            if (resultado && (rol == "" || rol.some(r => r == result.rol)))           
+            if (resultado && (rol == "" || rol.some(r => r == resultado.rol)))           
                 next(); 
             else
                 res.send({ok: false, error: "Usuario no autorizado"});
