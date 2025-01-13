@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
     let existeUsuario = await User.find({login:login,password:password});
 
     if (existeUsuario.length > 0)
-        res.send({ok: true, token: auth.generarToken(existeUsuario[0].login,
+        res.send({ok: true, token: auth.generarToken(existeUsuario[0]._id,existeUsuario[0].login,
                                                         existeUsuario[0].rol)});
     else
         res.send({ok: false, message:"login incorrecto"});

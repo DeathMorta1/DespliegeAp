@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Patient = require('./models/patient');
 const Physio = require('./models/physio');
 const Record = require('./models/record');
+const User = require('./models/users.js');
 
 // Function to load initial data
 async function loadData() {
@@ -10,6 +11,7 @@ async function loadData() {
       await Patient.deleteMany({});
       await Physio.deleteMany({});
       await Record.deleteMany({});
+      await User.deleteMany({});
       
      // Create some patients  
       const patients = [
@@ -157,6 +159,35 @@ async function loadData() {
       // Save all files using Promise.all
       const savedRecords = await Promise.all(records.map(record => record.save()));
       console.log('Added records:', savedRecords);
+
+      const users = [
+            new User({
+                login: 'Pepe',
+                password: 'a123456',
+                rol: 'admin'
+            }),
+            new User({
+                _id:savedPhysios[2]._id,
+                login: 'Mario',
+                password: 'b123456',
+                rol: 'physio'
+            }),
+            new User({
+                _id:savedPhysios[3]._id,
+                login: 'Andrea',
+                password: 'c123456',
+                rol: 'physio'
+            }),
+            new User({
+                _id:savedPatients[0]._id,
+                login: 'José',
+                password: 'd123456',
+                rol: 'patient'
+            })
+        ];
+
+      const savedUsers = await Promise.all(users.map(user => user.save()));
+      console.log('Added users:', savedUsers);
   
       mongoose.disconnect();
       console.log('Data successfully loaded and disconnected from MongoDB');

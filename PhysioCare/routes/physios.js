@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 //Peticion para recuperar todos los physios
-router.get('/',(req,res)=>{
+router.get('/',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
     Physio.find().then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado})
     }).catch(error=>{
@@ -18,7 +18,7 @@ router.get('/',(req,res)=>{
 });
 
 //Peticion para buscar un physio por especialidad
-router.get('/find',(req,res)=>{
+router.get('/find',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
     const { specialty } = req.query;
     Physio.find({
         specialty: {$regex:specialty,$options:'i'}
@@ -32,7 +32,7 @@ router.get('/find',(req,res)=>{
 });
 
 //Peticion para buscar un physio por id
-router.get('/:id',(req,res)=>{
+router.get('/:id',auth.protegerRuta(['admin','physio','patient']),(req,res)=>{
     Physio.findById(req.params.id).then(resultado=>{
         res.status(200).send({ok:true,resultado:resultado});
     }).catch(error=>{
@@ -43,7 +43,7 @@ router.get('/:id',(req,res)=>{
 });
 
 //Peticion para insertar un physio
-router.post('/',auth.protegerRuta,(req,res)=>{
+router.post('/',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
     let newPhysio = new Physio({
         name: req.body.name,
         surname: req.body.surname,
@@ -58,7 +58,7 @@ router.post('/',auth.protegerRuta,(req,res)=>{
 });
 
 //Peticion para modificar un physio
-router.put('/:id',auth.protegerRuta,(req,res)=>{
+router.put('/:id',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
     Physio.findByIdAndUpdate(req.params.id,{
         $set: {
             name: req.body.name,
@@ -76,7 +76,7 @@ router.put('/:id',auth.protegerRuta,(req,res)=>{
 });
 
 //Peticion para borrar el physio
-router.delete('/:id',auth.protegerRuta,(req,res)=>{
+router.delete('/:id',auth.protegerRuta(['admin']),auth.protegerRuta,(req,res)=>{
     Physio.findByIdAndDelete(req.params.id).then(resultado=>
         res.status(200).send({ok:true,resultado:resultado})
     ).catch(error=>{

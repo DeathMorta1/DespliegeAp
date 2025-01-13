@@ -2,58 +2,44 @@ const jwt = require('jsonwebtoken');
 
 const secreto = process.env.SECRETO;
 
-let generarToken = (login,rol) => jwt.sign({login: login, rol:rol}, secreto, {expiresIn: "2 hours"});
+let generarToken = (id,login,rol) => jwt.sign({id:id,login: login, rol:rol}, secreto, {expiresIn: "2 hours"});
 
-let validarToken = token => {
+let validarToken = (token) => {
     try {
         let resultado = jwt.verify(token, secreto);
         return resultado;
     } catch (e) {}
 }
 
-let protegerRuta = (req, res, next) => {
+let protegerRuta = (rol)=>{
+    (req, res, next) => {
     
-    let token = req.headers['authorization'];
+        let token = req.headers['authorization'];
+        
+        if (token && token.startsWith("Bearer ")) 
+        {    
+            token = token.slice(7);
+            let resultado = validarToken(token);
     
-    if (token && token.startsWith("Bearer ")) 
-    {    
-        token = token.slice(7);
-        let resultado = validarToken(token);
-
-        if (resultado &&  resultado.rol === 'admin')            
-            next(); 
-        else
-            res.send({ok: false, error: "Usuario no autorizado"});
-    } else
-         res.send({ok: false, error: "Usuario no autorizado"});
-}
-
-let protegerRutaPatient = (req,res,next)=>{
-    let token = req.headers['authorization'];
-
-    if(token && token.startsWith("Bearer ")){
-        token = token.slice(7);
-        let resultado = validarToken(token);
-
-        if (resultado &&  resultado.rol !== 'patient')            
-            next(); 
-        else
-            res.send({ok: false, error: "Usuario no autorizado"});
-    }else
-        res.send({ok: false, error: "Usuario no autorizado"});
+            if (resultado && (rol == "" || rol.some(r => r == result.rol)))           
+                next(); 
+            else
+                res.send({ok: false, error: "Usuario no autorizado"});
+        } else
+             res.send({ok: false, error: "Usuario no autorizado"});
+    }
 };
 
-let protegerPrueba = (valor=0)=>{
+let protegerPorId = ()=>{
     return (req,res,next)=>{
         let token = req.headers['authorization'];
     
         if(token && token.startsWith("Bearer ")){
             token = token.slice(7);
             let resultado = validarToken(token);
-            
-            if(resultado && resultado.rol ==='admin')
-                next();
-            else if (resultado &&  resultado.rol !== 'patient' && valor === 1)            
+            let id = req.params.id;
+
+            if (resultado &&  (resultado.rol === 'patient' || id === resultado.id))            
                 next();
             else
                 res.send({ok: false, error: "Usuario no autorizado"});
@@ -72,6 +58,5 @@ module.exports = {
     generarToken: generarToken,
     validarToken: validarToken,
     protegerRuta: protegerRuta,
-    protegerRutaPatient:protegerRutaPatient,
-    protegerPrueba:protegerPrueba
+    protegerPorId:protegerPorId
 };

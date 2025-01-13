@@ -13,17 +13,18 @@ async function loadData() {
                 rol: 'admin'
             }),
             new User({
-                login: 'Juan',
+                login: 'Mario',
                 password: 'b123456',
                 rol: 'physio'
             }),
             new User({
-                login: 'Maria',
+                login: 'Andrea',
                 password: 'c123456',
                 rol: 'physio'
             }),
             new User({
-                login: 'Fernando',
+                _id:'67587ac98b351540a21dd8d7',
+                login: 'José',
                 password: 'd123456',
                 rol: 'patient'
             })
